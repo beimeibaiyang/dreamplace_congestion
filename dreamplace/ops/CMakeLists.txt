@@ -34,7 +34,7 @@ add_subdirectory(timing)
 add_subdirectory(timing_heterosta)
 # gift initial placement 
 add_subdirectory(gift_init)
-
+add_subdirectory(congestion_grad)
 file(GLOB INSTALL_SRCS "${CMAKE_CURRENT_SOURCE_DIR}/*.py")
 install(
     FILES ${INSTALL_SRCS} DESTINATION dreamplace/ops

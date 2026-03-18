@@ -246,12 +246,6 @@ class NonLinearPlace(BasicPlace.BasicPlace):
                             "pin_utilization": self.op_collections.pin_utilization_map_op,
                         }
                     )
-                    
-                if params.enable_congestion_optimization:
-                    eval_ops.update({
-                        "congestion_map": self.op_collections.congestion_map_op
-                    })
-
                 if len(placedb.regions) > 0:
                     eval_ops.update(
                         {
@@ -263,10 +257,6 @@ class NonLinearPlace(BasicPlace.BasicPlace):
 
                 # a function to initialize learning rate
                 def initialize_learning_rate(pos):
-                    if torch.isnan(pos).any():  
-                        logging.error("NaN detected in position tensor, reinitializing positions")  
-                        # 重新初始化位置  
-                        pos.data.copy_(torch.randn_like(pos) * 1000)  
                     learning_rate = model.estimate_initial_learning_rate(
                         pos, global_place_params["learning_rate"]
                     )
@@ -725,7 +715,7 @@ class NonLinearPlace(BasicPlace.BasicPlace):
                         if (
                             params.routability_opt_flag
                             and num_area_adjust < params.max_num_area_adjust
-                            and Llambda_metrics[-1][-1].overflow[-1] < params.node_area_adjust_overflow
+                            and Llambda_metrics[-1][-1].overflow < params.node_area_adjust_overflow
                         ):
                             content = (
                                 "routability optimization round %d: adjust area flags = (%d, %d, %d)"

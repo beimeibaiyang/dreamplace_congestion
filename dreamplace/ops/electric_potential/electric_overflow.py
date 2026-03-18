@@ -180,8 +180,13 @@ class ElectricOverflow(nn.Module):
         self.num_movable_macros = 0
         if self.target_density < 1 and self.movable_macro_mask is not None:
             self.num_movable_macros = self.movable_macro_mask.sum().data.item()
-            self.ratio[:self.num_movable_nodes][
-                self.movable_macro_mask] = self.target_density
+            target_density_tensor = torch.tensor(  
+                self.target_density,   
+                dtype=self.ratio.dtype,   
+                device=self.ratio.device  
+            )  
+            self.ratio[:self.num_movable_nodes][  
+                self.movable_macro_mask] = target_density_tensor
 
         # compute maximum impacted bins
         self.num_bins_x = int(round((self.xh - self.xl) / self.bin_size_x))

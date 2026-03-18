@@ -360,16 +360,6 @@ class PlaceObj(nn.Module):
         @param pos locations of cells
         @return objective value
         """
-        if torch.isnan(pos).any():  
-            logging.error("Invalid positions detected in obj_fn")  
-            return torch.tensor(float('inf'), device=pos.device, requires_grad=True)  
-        
-        self.wirelength = self.op_collections.wirelength_op(pos)  
-        if len(self.placedb.regions) > 0:  
-            self.density = self.op_collections.fence_region_density_merged_op(pos)  
-        else:  
-            self.density = self.op_collections.density_op(pos) 
-            
         self.wirelength = self.op_collections.wirelength_op(pos)
         if len(self.placedb.regions) > 0:
             self.density = self.op_collections.fence_region_density_merged_op(pos)

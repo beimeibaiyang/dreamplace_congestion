@@ -36,8 +36,6 @@ class EvalMetrics (object):
         self.tns = None
         self.wns = None
         self.eval_time = None
-        self.congestion = None 
-        self.max_congestion = None
 
     def __str__(self):
         """
@@ -82,12 +80,6 @@ class EvalMetrics (object):
             content += ", RouteOverflow %.6E" % (self.route_utilization)
         if self.pin_utilization is not None:
             content += ", PinOverflow %.6E" % (self.pin_utilization)
-
-        if self.congestion is not None:
-            content += ", Cong %.4E" % (self.congestion)
-        if self.max_congestion is not None:
-            content += ", MaxCong %.4E" % (self.max_congestion)
-
         if self.gamma is not None:
             content += ", gamma %.6E" % (self.gamma)
         if self.tns is not None:
@@ -146,8 +138,4 @@ class EvalMetrics (object):
                 pin_utilization_map = ops["pin_utilization"](var)
                 pin_utilization_map_sum = pin_utilization_map.sum()
                 self.pin_utilization = pin_utilization_map.sub_(1).clamp_(min=0).sum() / pin_utilization_map_sum
-            if "congestion_map" in ops:
-                congestion_map = ops["congestion_map"](var)
-                self.congestion = congestion_map.mean().data
-                self.max_congestion = congestion_map.max().data
         self.eval_time = time.time() - tt

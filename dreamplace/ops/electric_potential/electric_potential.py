@@ -394,6 +394,14 @@ class ElectricPotential(ElectricOverflow):
 
 
     def compute_fence_region_map(self, fence_region, macro_pos_x=None, macro_pos_y=None, macro_size_x=None, macro_size_y=None):
+        if macro_pos_x is not None:  
+            macro_pos_x = torch.nan_to_num(macro_pos_x, nan=0.0)  
+            macro_pos_y = torch.nan_to_num(macro_pos_y, nan=0.0)  
+            macro_size_x = torch.nan_to_num(macro_size_x, nan=1.0)  
+            macro_size_y = torch.nan_to_num(macro_size_y, nan=1.0)  
+        
+        # 确保fence_region数据有效  
+        fence_region = torch.nan_to_num(fence_region, nan=0.0) 
         if(macro_pos_x is not None):
             pos = torch.cat([fence_region[:,0], macro_pos_x, fence_region[:,1], macro_pos_y], 0)
             num_terminals = fence_region.size(0) + macro_size_x.size(0)

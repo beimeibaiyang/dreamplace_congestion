@@ -305,21 +305,5 @@
 "macro_halo_y": {
     "description": "vertical halo around movable macros",
     "default": 0
-    },
-"enable_congestion_optimization":{
-    "description":"1:on ; 0:off",
-    "default":0
-    },
-"congestion_weight":{
-    "description":"0.1-2.0",
-    "default":1.0
-    },
-"congestion_update_interval":{
-    "description":"Update the congestion map every N iterations",
-    "default":20
-    },
-"congestion_threshold":{
-    "description":"High Congestion Threshold",
-    "default":0.7
     }
 }
