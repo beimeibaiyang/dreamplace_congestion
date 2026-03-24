@@ -349,17 +349,5 @@
 "mci_debug" : {
     "description" : "enable debug logging for momentum inflation",
     "default" : 0
-    },
-"mci_max_num_adjust" : {
-    "description" : "maximum times to apply momentum cell inflation",
-    "default" : 5
-    },
-"mci_overflow_threshold" : {
-    "description" : "overflow threshold to trigger momentum cell inflation",
-    "default" : 0.25
-    },
-"mci_update_every_route_opt" : {
-    "description" : "whether apply momentum inflation whenever routability optimization condition is checked",
-    "default" : 1
     }
 }

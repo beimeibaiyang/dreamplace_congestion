@@ -616,7 +616,6 @@ class NonLinearPlace(BasicPlace.BasicPlace):
                     adjust_route_area_flag = params.adjust_nctugr_area_flag or params.adjust_rudy_area_flag
                     adjust_pin_area_flag = params.adjust_pin_area_flag
                     num_area_adjust = 0
-                    num_mci_adjust = 0
 
                 Llambda_flat_iteration = 0
 
@@ -719,30 +718,11 @@ class NonLinearPlace(BasicPlace.BasicPlace):
                             break
 
                         # for routability optimization
-                        # if (
-                        #     params.routability_opt_flag
-                        #     and num_area_adjust < params.max_num_area_adjust
-                        #     and Llambda_metrics[-1][-1].overflow < params.node_area_adjust_overflow
-                        # ):
-                        routability_condition = (
-                            params.routability_opt_flag
-                            and Llambda_metrics[-1][-1].overflow < params.node_area_adjust_overflow
-                        )
-
-                        mci_condition = (
-                            params.routability_opt_flag
-                            and params.enable_momentum_cell_inflation
-                            and num_mci_adjust < params.mci_max_num_adjust
-                            and Llambda_metrics[-1][-1].overflow < params.mci_overflow_threshold
-                        )
-
-                        area_adjust_condition = (
+                        if (
                             params.routability_opt_flag
                             and num_area_adjust < params.max_num_area_adjust
                             and Llambda_metrics[-1][-1].overflow < params.node_area_adjust_overflow
-                        )
-
-                        if routability_condition and (mci_condition or area_adjust_condition):
+                        ):
                             content = (
                                 "routability optimization round %d: adjust area flags = (%d, %d, %d)"
                                 % (
@@ -790,7 +770,6 @@ class NonLinearPlace(BasicPlace.BasicPlace):
                                 )
 
                                 if inflation_applied:
-                                    num_mci_adjust += 1
                                     inflation_stats = model.op_collections.momentum_inflation_op.stats()
                                     logging.info(
                                         "momentum inflation applied: avg=%.6f, max=%.6f, inflated=%d"
@@ -801,16 +780,13 @@ class NonLinearPlace(BasicPlace.BasicPlace):
                                         )
                                     )
 
-                            if area_adjust_condition:
-                                (
-                                    adjust_area_flag,
-                                    adjust_route_area_flag,
-                                    adjust_pin_area_flag,
-                                ) = model.op_collections.adjust_node_area_op(
-                                    pos, route_utilization_map, pin_utilization_map
-                                )
-                            else:
-                                adjust_area_flag = False
+                            (
+                                adjust_area_flag,
+                                adjust_route_area_flag,
+                                adjust_pin_area_flag,
+                            ) = model.op_collections.adjust_node_area_op(
+                                pos, route_utilization_map, pin_utilization_map
+                            )
 
                             content += " -> (%d, %d, %d), inflation=%d" % (
                                 adjust_area_flag,
@@ -819,10 +795,6 @@ class NonLinearPlace(BasicPlace.BasicPlace):
                                 int(inflation_applied),
                             )
                             logging.info(content)
-                            logging.info(
-                                "routability optimization round %d, mci round %d"
-                                % (num_area_adjust, num_mci_adjust)
-                            )
 
                             if inflation_applied or adjust_area_flag:
                                 if adjust_area_flag:
